@@ -52,5 +52,11 @@ html, body, main {
   .name {
     font-family: 'Open Sans', sans-serif;
     font-size: x-large;
-    color: var(--name-color)
+    color: var(--name-color);
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  .name h1, .name h3 {
+    margin: 0.1em;
   }
