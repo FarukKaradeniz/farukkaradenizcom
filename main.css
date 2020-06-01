@@ -1,5 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
+:root {
+  --background-gradient-color-primary: rgb(208,255,253);
+  --background-gradient-color-secondary: rgba(117,254,255,0.8491771708683473);
+  --social-icon-color: rgba(136, 127, 127, 0.85);
+  --social-icon-color-opaque: rgba(136, 127, 127, 1);
+  --name-color: rgb(121, 105, 105);
+}
+
 html, body, main {
     margin: 0;
     padding: 0;
@@ -12,8 +20,8 @@ html, body, main {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background: rgb(208,255,253);
-    background: radial-gradient(circle, rgba(208,255,253,1) 0%, rgba(117,254,255,0.8491771708683473) 100%);
+    background: var(--background-gradient-color-primary);
+    background: radial-gradient(circle, var(--background-gradient-color-primary) 0%, var(--background-gradient-color-secondary) 100%);
   }
 
   ul {
@@ -34,15 +42,15 @@ html, body, main {
     cursor: pointer;
     font-size: 5em;
     margin: .5rem;
-    color: rgb(136, 127, 127)
+    color: var(--social-icon-color)
   }
 
   .social:hover {
-    color: rgb(112, 95, 95);
+    color: var(--social-icon-color-opaque)
   }
 
   .name {
     font-family: 'Open Sans', sans-serif;
     font-size: x-large;
-    color: rgb(121, 105, 105);
+    color: var(--name-color)
   }
