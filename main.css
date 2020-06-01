@@ -60,3 +60,27 @@ html, body, main {
   .name h1, .name h3 {
     margin: 0.1em;
   }
+
+  @media screen and (max-width: 600px) {
+    .social {
+      font-size: 3.5em;
+      margin: 0.35rem;
+    }
+
+    .name {
+      font-size: larger;
+      margin-bottom: .8em;
+    }
+  }
+
+  @media screen and (max-width: 408px) {
+    .social {
+      font-size: 2.5em;
+      margin: 0.25rem;
+    }
+
+    .name {
+      font-size: large;
+      margin-bottom: .6em;
+    }
+  }
