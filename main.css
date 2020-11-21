@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
 
 :root {
-  --background-gradient-color-primary: rgb(208,255,253);
-  --background-gradient-color-secondary: rgba(117,254,255,0.8491771708683473);
-  --social-icon-color: rgba(136, 127, 127, 0.85);
-  --social-icon-color-opaque: rgba(136, 127, 127, 1);
-  --name-color: rgb(121, 105, 105);
+  --background-gradient-color-primary: #162447;
+  --background-gradient-color-secondary: rgba(117,254,255,0.85);
+  --social-icon-color: rgba(117, 254, 255, 0.65);
+  --social-icon-color-opaque: rgba(117, 254, 255, 1);
+  --name-color: #fff;
 }
 
 html, body, main {
@@ -21,7 +21,6 @@ html, body, main {
   justify-content: center;
   flex-direction: column;
   background: var(--background-gradient-color-primary);
-  background: radial-gradient(circle, var(--background-gradient-color-primary) 0%, var(--background-gradient-color-secondary) 100%);
 }
 
 ul {
@@ -59,6 +58,24 @@ a {
 
 .name h1, .name h3 {
   margin: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.name h1 {
+  font-size: 6rem;
+  margin-bottom: 2rem;
+}
+
+.name h3 {
+  font-size: 2.5rem;
+}
+
+.name a, .name a:visited {
+  color: var(--background-gradient-color-secondary);
+}
+
+.name a:hover {
+  color: var(--social-icon-color-opaque);
 }
 
 @media screen and (max-width: 600px) {
