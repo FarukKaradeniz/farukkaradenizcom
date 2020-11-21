@@ -80,24 +80,42 @@ a {
 
 @media screen and (max-width: 600px) {
   .social {
-    font-size: 3.5em;
+    font-size: 3.0em;
     margin: 0.35rem;
   }
 
-  .name {
-    font-size: larger;
-    margin-bottom: .8em;
+  .name h1, .name h3 {
+    margin: 0.1em;
+    margin-bottom: .8rem;
+  }
+  
+  .name h1 {
+    font-size: 5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .name h3 {
+    font-size: 2.0rem;
   }
 }
 
 @media screen and (max-width: 408px) {
   .social {
-    font-size: 2.5em;
+    font-size: 2.0em;
     margin: 0.25rem;
   }
 
-  .name {
-    font-size: large;
-    margin-bottom: .6em;
+  .name h1, .name h3 {
+    margin: 0.1em;
+    margin-bottom: .6rem;
+  }
+  
+  .name h1 {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+  }
+  
+  .name h3 {
+    font-size: 1.5rem;
   }
 }
