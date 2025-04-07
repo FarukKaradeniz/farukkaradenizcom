@@ -1,6 +1,5 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126640018-1"></script>
@@ -11,88 +10,111 @@
 
       gtag('config', 'UA-126640018-1');
     </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <meta charset="utf-8">
-  <title>The page you are looking for doesn't exist</title>
-  <style type="text/css">
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            background-color: #f0f4f8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
 
-    @import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+        .content-wrapper {
+            max-width: 600px;
+            width: 90%;
+            padding: 20px;
+        }
 
-    :root {
-    --background-gradient-color-primary: #162447;
-    --background-gradient-color-secondary: rgba(117,254,255,0.85);
-    --social-icon-color: rgba(117, 254, 255, 0.65);
-    --social-icon-color-opaque: rgba(117, 254, 255, 1);
-    --name-color: #fff;
-    }
+        .status-code {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 6rem;
+            font-weight: 900;
+            color: #adb5bd;
+            margin-bottom: 0;
+            line-height: 1;
+            letter-spacing: -1px;
+        }
 
-    html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
-      width: 100%;
-    }
+        .message {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 15px;
+        }
 
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: var(--background-gradient-color-primary);
-      color: var(--name-color);
-      -webkit-font-smoothing: antialiased;
-    }
+        .description {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
 
-    .error-container {
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      height: 100%;
-    }
+        .home-link {
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #0A66C2;
+            text-decoration: none;
+            padding: 10px 24px;
+            border: 2px solid #0A66C2;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+        }
 
-    .error-container .message {
-      margin: auto;
-    }
+        .home-link:hover,
+        .home-link:focus {
+            background-color: #0A66C2;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        
+        .home-link:active {
+            transform: translateY(0);
+        }
 
-    .message h1 {
-        margin: 0;
-        font-size: 12rem;
-    }
-
-    .message h3 {
-        margin: 0;
-        font-size: 1.5rem;
-        font-weight: 300;
-    }
-
-
-    .return {
-      color: var(--social-icon-color);
-      font-weight: 400;
-      letter-spacing: -0.04em;
-    }
-
-    .return a {
-      text-decoration: none;  
-      padding-bottom: 1px;
-      color: var(--social-icon-color);
-      border-bottom: 1px solid var(--social-icon-color);
-    }
-
-    .return a:hover {
-      border-bottom-color: var(--social-icon-color-opaque);
-    }
-  </style>
+        @media (max-width: 480px) {
+            .status-code {
+                font-size: 5rem;
+            }
+            .message {
+                font-size: 1.5rem;
+            }
+            .description {
+                font-size: 1rem;
+            }
+            .home-link {
+                font-size: 1rem;
+                padding: 8px 16px;
+            }
+        }
+    </style>
 </head>
-
 <body>
-
-<div class="error-container">
-  <div class="message">
-    <h1>404</h1>
-    <h3>There is nothing here</h3>
-  </div>
-  <p class="return"><a href="/">farukkaradeniz.com</a></p>
-</div>
-
+    <div class="content-wrapper">
+        <h1 class="status-code">404</h1>
+        <p class="message">Page Not Found</p>
+        <p class="description">
+            Sorry, the page you are looking for does not exist.
+        </p>
+        <a href="index.html" class="home-link">Go Back Home</a>
+    </div>
 </body>
 </html>

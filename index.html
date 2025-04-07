@@ -1,65 +1,185 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126640018-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-126640018-1');
-    </script>
-    
+<html lang="en">
+<head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Ömer Faruk Karadeniz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="author" content="Ömer Faruk Karadeniz">
     <meta name="description" content="Personal Website">
     <meta name="keywords" content="Ömer Faruk Karadeniz, Software Engineer, Backend Engineer, Software Developer, Backend Developer, Frontend Developer">
-    <script src="https://kit.fontawesome.com/1bf4901a27.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" type="text/css" href="main.css"/>
-  </head>
-  
-  <body>
-    <main class="container">
-      <div class="name">
-        <h1>Ömer Faruk Karadeniz</h1>
-        <h3>Software Engineer <a href="https://www.iyzico.com">@iyzico</a></h3>
-      </div>
-      
-      <ul>
-        <li>
-          <a href="https://www.instagram.com/omeerfk" target="_blank">
-            <i class="social fab fa-instagram-square"></i>
-          </a>
-        </li>
-        <li>
-          <a href="https://github.com/FarukKaradeniz" target="_blank">
-            <i class="social fab fa-github-square"></i>
-          </a>
-        </li>
-        <li>
-          <a href="https://www.linkedin.com/in/farukkaradeniz" target="_blank">
-            <i class="social fab fa-linkedin"></i>
-          </a>
-        </li>
-        <li>
-          <a href="https://stackoverflow.com/users/8040692/omeerfk" target="_blank">
-            <i class="social fab fa-stack-overflow"></i>
-          </a>
-        </li>
-        <li>
-          <a href="https://medium.com/@OmeerFK" target="_blank">
-            <i class="social fab fa-medium"></i>
-          </a>
-        </li>
-        <li>
-          <a href="mailto:krdnzomer@gmail.com">
-            <i class="social fab fas fa-envelope"></i>
-          </a>
-        </li>
-      </ul>
-  
-  </body>
+    <title>Ömer Faruk Karadeniz</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.7;
+            background-color: #f0f4f8;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .content-wrapper {
+            max-width: 100%;
+            width: 100%;
+            padding: 20px 0;
+        }
+
+        .name {
+            font-family: 'Poppins', sans-serif;
+            font-size: 5rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: #212529;
+            letter-spacing: -0.5px;
+        }
+
+        .title, .company {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2rem;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .company {
+            margin-bottom: 40px;
+        }
+        
+        .company a {
+            color: #0A66C2;
+            text-decoration: none;
+            font-weight: 600;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .company a:hover {
+            color: #0056b3;
+        }
+        
+        .company a:after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: -2px;
+            left: 0;
+            background-color: #0A66C2;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .company a:hover:after {
+            transform: scaleX(1);
+        }
+        
+
+        .social-links {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .social-links li a {
+            color: #343a40;
+            font-size: 2.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .social-links li a:hover {
+            transform: scale(1.5);
+        }
+
+        .social-links li a.linkedin:hover { color: #0A66C2; }
+        .social-links li a.github:hover { color: #181717; }
+        .social-links li a.instagram:hover { color: #E4405F; }
+        .social-links li a.medium:hover { color: #000000; }
+        .social-links li a.stackoverflow:hover { color: #F48024; }
+        .social-links li a.gmail:hover { color: #D44638; }
+
+        @media (max-width: 600px) {
+            .name {
+                font-size: 2.2rem;
+            }
+            .title, .company {
+                font-size: 1.3rem;
+            }
+            .social-links {
+                gap: 25px;
+            }
+            .social-links li a {
+                font-size: 2rem;
+            }
+        }
+        @media (max-width: 400px) {
+            .name {
+                font-size: 1.9rem;
+            }
+             .title, .company {
+                font-size: 1.1rem;
+            }
+            .social-links {
+                gap: 20px;
+            }
+             .social-links li a {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <h1 class="name">Ömer Faruk Karadeniz</h1>
+        <p class="title">Software Engineer</p>
+        <p class="company"><a href="https://iyzico.com" target="_blank" rel="noopener noreferrer">@iyzico</a></p>
+
+        <ul class="social-links">
+            <li>
+                <a href="#" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile" class="linkedin">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+            </li>
+            <li>
+                <a href="https://github.com/FarukKaradeniz" target="_blank" rel="noopener noreferrer" aria-label="Github Profile" class="github">
+                    <i class="fab fa-github"></i>
+                </a>
+            </li>
+            <li>
+                <a href="https://www.instagram.com/omeerfk" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profile" class="instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+            </li>
+             <li>
+                <a href="https://medium.com/@OmeerFK" target="_blank" rel="noopener noreferrer" aria-label="Medium Profile" class="medium">
+                     <i class="fab fa-medium"></i>
+                </a>
+            </li>
+             <li>
+                <a href="https://stackoverflow.com/users/8040692/omeerfk" target="_blank" rel="noopener noreferrer" aria-label="Stack Overflow Profile" class="stackoverflow">
+                     <i class="fab fa-stack-overflow"></i>
+                </a>
+            </li>
+            <li>
+                <a href="mailto:krdnzomer@gmail.com" aria-label="Send Email" class="gmail">
+                    <i class="fas fa-envelope"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</body>
 </html>
