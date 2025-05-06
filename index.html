@@ -46,6 +46,10 @@
         body.instagram-bg {
             background-color: rgba(228, 64, 95, 0.1);
         }
+
+        body.bluesky-bg {
+            background-color: rgba(0, 149, 246, 0.1);
+        }
         
         body.medium-bg {
             background-color: rgba(0, 0, 0, 0.1);
@@ -137,6 +141,7 @@
         .social-links li a.linkedin:hover { color: #0A66C2; }
         .social-links li a.github:hover { color: #181717; }
         .social-links li a.instagram:hover { color: #E4405F; }
+        .social-links li a.bluesky:hover { color: #0095F6; }
         .social-links li a.medium:hover { color: #000000; }
         .social-links li a.stackoverflow:hover { color: #F48024; }
         .social-links li a.gmail:hover { color: #D44638; }
@@ -179,7 +184,7 @@
             socialLinks.forEach(link => {
                 // Get the class name to determine which background to apply
                 const socialClass = Array.from(link.classList).find(cls => 
-                    ['linkedin', 'github', 'instagram', 'medium', 'stackoverflow', 'gmail'].includes(cls)
+                    ['linkedin', 'github', 'instagram', 'medium', 'stackoverflow', 'gmail', 'bluesky'].includes(cls)
                 );
                 
                 if (socialClass) {
@@ -217,6 +222,11 @@
             <li>
                 <a href="https://www.instagram.com/omeerfk" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profile" class="instagram">
                     <i class="fab fa-instagram"></i>
+                </a>
+            </li>
+            <li>
+                <a href="https://bsky.app/profile/farukkaradeniz.com" target="_blank" rel="noopener noreferrer" aria-label="Bluesky Profile" class="bluesky">
+                    <i class="fas fa-brands fa-bluesky"></i>
                 </a>
             </li>
              <li>
