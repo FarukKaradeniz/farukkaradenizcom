@@ -24,9 +24,9 @@
         body {
             height: 100%;
             font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.7;
+            line-height: 1.75;
             background-color: #f0f4f8;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4' viewBox='0 0 4 4'%3E%3Cpath fill='%239C92AC' fill-opacity='0.1' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6' viewBox='0 0 6 6'%3E%3Cpath fill='%239C92AC' fill-opacity='0.25' d='M1 3h1v1H1V3zm2-2h1v1H3V1z'%3E%3C/path%3E%3C/svg%3E");
             display: flex;
             justify-content: center;
             align-items: center;
@@ -44,6 +44,10 @@
         
         body.instagram-bg {
             background-color: rgba(228, 64, 95, 0.1);
+        }
+        
+        body.twitter-bg {
+            background-color: rgba(29, 161, 242, 0.1);
         }
 
         body.bluesky-bg {
@@ -113,7 +117,7 @@
         }
         
         .company a:hover:after {
-            transform: scaleX(1);
+            transform: scaleX(1.25);
         }
         
         
@@ -140,6 +144,7 @@
         .social-links li a.linkedin:hover { color: #0A66C2; }
         .social-links li a.github:hover { color: #181717; }
         .social-links li a.instagram:hover { color: #E4405F; }
+        .social-links li a.twitter:hover { color: #1DA1F2; }
         .social-links li a.bluesky:hover { color: #0095F6; }
         .social-links li a.medium:hover { color: #000000; }
         .social-links li a.stackoverflow:hover { color: #F48024; }
@@ -193,23 +198,18 @@
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Get all social media links
             const socialLinks = document.querySelectorAll('.social-links li a');
             
-            // Add event listeners for each link
             socialLinks.forEach(link => {
-                // Get the class name to determine which background to apply
                 const socialClass = Array.from(link.classList).find(cls => 
-                    ['linkedin', 'github', 'instagram', 'medium', 'stackoverflow', 'gmail', 'bluesky'].includes(cls)
+                    ['linkedin', 'github', 'instagram', 'twitter', 'medium', 'stackoverflow', 'gmail', 'bluesky'].includes(cls)
                 );
                 
                 if (socialClass) {
-                    // Add mouseenter event to change body background
                     link.addEventListener('mouseenter', () => {
                         document.body.className = `${socialClass}-bg`;
                     });
                     
-                    // Add mouseleave event to revert body background
                     link.addEventListener('mouseleave', () => {
                         document.body.className = '';
                     });
@@ -240,6 +240,13 @@
                 </a>
             </li>
             <li>
+                <a href="https://twitter.com/omeerfk" target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile" class="twitter">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                        <path d="M64 32C28.7 32 0 60.7 0 96V416c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V96c0-35.3-28.7-64-64-64H64zM351.3 199.3v0c0 86.7-66 186.6-186.6 186.6c-37.2 0-71.7-10.8-100.7-29.4c5.3 .6 10.4 .8 15.8 .8c30.7 0 58.9-10.4 81.4-28c-28.8-.6-53-19.5-61.3-45.5c10.1 1.5 19.2 1.5 29.6-1.2c-30-6.1-52.5-32.5-52.5-64.4v-.8c8.7 4.9 18.9 7.9 29.6 8.3c-9-6-16.4-14.1-21.5-23.6s-7.8-20.2-7.7-31c0-12.2 3.2-23.4 8.9-33.1c32.3 39.8 80.8 65.8 135.2 68.6c-9.3-44.5 24-80.6 64-80.6c18.9 0 35.9 7.9 47.9 20.7c14.8-2.8 29-8.3 41.6-15.8c-4.9 15.2-15.2 28-28.8 36.1c13.2-1.4 26-5.1 37.8-10.2c-8.9 13.1-20.1 24.7-32.9 34c.2 2.8 .2 5.7 .2 8.5z"/>
+                    </svg>
+                </a>
+            </li>
+            <li>
                 <a href="https://www.instagram.com/omeerfk" target="_blank" rel="noopener noreferrer" aria-label="Instagram Profile" class="instagram">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
                         <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z"/>
@@ -263,14 +270,12 @@
             <li>
                 <a href="https://stackoverflow.com/users/8040692/omeerfk" target="_blank" rel="noopener noreferrer" aria-label="Stack Overflow Profile" class="stackoverflow">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-                        <!-- Note: I'm using a standard StackOverflow SVG here since there appears to be an issue with the one provided -->
                         <path d="M290.7 311L95 269.7 86.8 309l195.7 41zm51-87L188.2 95.7l-25.5 30.8 153.5 128.3zm-31.2 39.7L129.2 179l-16.7 36.5L293.7 300zM262 32l-32 24 119.3 160.3 32-24zm20.5 328h-200v39.7h200zm39.7 80H42.7V320h-40v160h359.5V320h-40z"/>
                     </svg>
                 </a>
             </li>
             <li>
                 <a href="mailto:krdnzomer@gmail.com" aria-label="Send Email" class="gmail">
-                    <!-- Using a standard email SVG icon -->
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                         <path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                     </svg>
