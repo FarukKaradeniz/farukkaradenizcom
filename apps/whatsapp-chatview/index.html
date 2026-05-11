@@ -803,7 +803,10 @@
 
     // Keyboard accessibility for drop zone
     dropZone.addEventListener('keydown', e => {
-        if (e.key === 'Enter' || e.key === ' ') triggerFileInput();
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerFileInput();
+        }
     });
 
     // Re-render when "My Name" changes
