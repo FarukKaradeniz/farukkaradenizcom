@@ -47,25 +47,28 @@
 
         body {
             font-family: var(--font);
-            background-color: #f0f4f8;
+            background:
+                radial-gradient(circle at top left, #f8fbff 0%, #eef3f9 45%, #e8eef6 100%);
             display: flex;
             flex-direction: column;
             min-height: 100%;
+            color: #0f172a;
         }
 
         /* ── TOOLBAR ── */
         .toolbar {
-            background-color: var(--wa-teal);
+            background: linear-gradient(100deg, #0a7d73 0%, #0f917f 100%);
             color: #fff;
             display: flex;
             align-items: center;
             gap: 14px;
-            padding: 10px 16px;
+            padding: 12px 18px;
             position: sticky;
             top: 0;
             z-index: 100;
-            box-shadow: 0 1px 4px rgba(0,0,0,.3);
+            box-shadow: 0 8px 24px rgba(7, 94, 84, .22);
             flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255,255,255,0.16);
         }
 
         .toolbar-title {
@@ -146,17 +149,19 @@
         .drop-zone {
             border: 3px dashed #b0bec5;
             border-radius: 20px;
-            padding: 60px 40px;
+            padding: 68px 44px;
             max-width: 540px;
             width: 100%;
             background: #fff;
             cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
         }
 
         .drop-zone.drag-over {
             border-color: var(--wa-light-green);
             background: #f0fff4;
+            box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14);
         }
 
         .drop-zone svg.icon-upload {
@@ -209,8 +214,8 @@
         #viewer-layout {
             display: none;
             flex: 1;
-            gap: 16px;
-            padding: 16px;
+            gap: 22px;
+            padding: 24px;
             min-height: 0;
         }
 
@@ -228,39 +233,42 @@
                     rgba(0,0,0,.015) 29px
                 );
             overflow-y: auto;
-            padding: 12px 10px;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            padding: 24px 20px;
+            border-radius: 18px;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(255,255,255,.75);
         }
 
         #stats-panel {
             width: min(360px, 34vw);
             min-width: 260px;
-            background: #fff;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,.08);
-            padding: 16px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(6px);
+            border-radius: 18px;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(255,255,255,.85);
+            padding: 20px;
             overflow-y: auto;
         }
 
         #stats-panel h2 {
-            font-size: 1rem;
+            font-size: 1.04rem;
             color: #1f2937;
-            margin-bottom: 10px;
+            margin-bottom: 14px;
         }
 
         #stats-summary {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
-            margin-bottom: 14px;
+            gap: 10px;
+            margin-bottom: 18px;
         }
 
         .stat-card {
-            background: #f7fafc;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 8px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
         }
 
         .stat-label {
@@ -275,16 +283,17 @@
         }
 
         .stats-subtitle {
-            font-size: 0.82rem;
-            color: #4b5563;
-            margin-bottom: 8px;
+            font-size: 0.84rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 10px;
         }
 
         .stats-list {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
         }
 
         .stats-list li {
@@ -292,9 +301,10 @@
             justify-content: space-between;
             gap: 12px;
             font-size: 0.85rem;
-            padding: 6px 8px;
-            border-radius: 8px;
-            background: #f9fafb;
+            padding: 9px 10px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
         }
 
         .stats-list .name {
@@ -311,7 +321,7 @@
         /* ── MESSAGES ── */
         .msg-row {
             display: flex;
-            margin-bottom: 3px;
+            margin-bottom: 8px;
         }
 
         .msg-row.sent {
@@ -330,7 +340,7 @@
         .date-divider {
             display: flex;
             justify-content: center;
-            margin: 12px 0 8px;
+            margin: 18px 0 12px;
         }
 
         .date-divider span {
@@ -345,9 +355,9 @@
         /* Bubble */
         .bubble {
             max-width: min(72%, 560px);
-            padding: 6px 10px 4px;
-            border-radius: 8px;
-            box-shadow: 0 1px 1px var(--wa-shadow);
+            padding: 10px 12px 8px;
+            border-radius: 14px;
+            box-shadow: 0 6px 14px rgba(0,0,0,.10);
             position: relative;
             word-break: break-word;
             line-height: 1.45;
@@ -364,13 +374,13 @@
         }
 
         .sender-name {
-            font-size: 0.77rem;
+            font-size: 0.78rem;
             font-weight: 600;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
         }
 
         .msg-text {
-            font-size: 0.88rem;
+            font-size: 0.9rem;
             color: #111;
             white-space: pre-wrap;
         }
@@ -385,11 +395,11 @@
             align-items: center;
             justify-content: flex-end;
             gap: 4px;
-            margin-top: 3px;
+            margin-top: 7px;
         }
 
         .msg-time {
-            font-size: 0.67rem;
+            font-size: 0.68rem;
             color: var(--wa-timestamp);
             white-space: nowrap;
         }
@@ -399,9 +409,9 @@
             background: var(--wa-system-bg);
             color: #4a4a4a;
             font-size: 0.72rem;
-            padding: 5px 12px;
-            border-radius: 8px;
-            box-shadow: 0 1px 1px var(--wa-shadow);
+            padding: 7px 13px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
             text-align: center;
             max-width: 80%;
         }
@@ -423,6 +433,8 @@
         @media (max-width: 900px) {
             #viewer-layout {
                 flex-direction: column;
+                padding: 16px;
+                gap: 14px;
             }
             #stats-panel {
                 width: 100%;
@@ -436,7 +448,8 @@
                 padding: 10px;
             }
             .toolbar-title { font-size: 0.95rem; }
-            .bubble { max-width: 88%; }
+            #chat-area { padding: 14px 10px; }
+            .bubble { max-width: 90%; padding: 9px 11px 7px; }
             .drop-zone { padding: 40px 20px; }
         }
     </style>
