@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Ömer Faruk Karadeniz">
+    <meta name="description" content="View exported WhatsApp chat history as a chat view">
+    <title>WhatsApp Chat Viewer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --wa-green: #128C7E;
+            --wa-light-green: #25D366;
+            --wa-teal: #075E54;
+            --wa-bg: #ECE5DD;
+            --wa-bg-pattern: #d9cfc7;
+            --wa-sent: #DCF8C6;
+            --wa-received: #FFFFFF;
+            --wa-header: #128C7E;
+            --wa-timestamp: #667781;
+            --wa-system-bg: rgba(255,255,255,0.85);
+            --wa-shadow: rgba(0,0,0,0.13);
+            --font: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+            /* Sender colours (cycling) */
+            --color-0: #E91E63;
+            --color-1: #9C27B0;
+            --color-2: #673AB7;
+            --color-3: #2196F3;
+            --color-4: #009688;
+            --color-5: #FF5722;
+            --color-6: #795548;
+            --color-7: #607D8B;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: var(--font);
+            background:
+                radial-gradient(circle at top left, #f8fbff 0%, #eef3f9 45%, #e8eef6 100%);
+            display: flex;
+            flex-direction: column;
+            min-height: 100%;
+            color: #0f172a;
+        }
+
+        /* ── TOOLBAR ── */
+        .toolbar {
+            background: linear-gradient(100deg, #0a7d73 0%, #0f917f 100%);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 18px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 24px rgba(7, 94, 84, .22);
+            flex-wrap: wrap;
+            border-bottom: 1px solid rgba(255,255,255,0.16);
+        }
+
+        .toolbar-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1 1 auto;
+            min-width: 160px;
+        }
+
+        .toolbar-title svg {
+            width: 28px;
+            height: 28px;
+            fill: #fff;
+            flex-shrink: 0;
+        }
+
+        .toolbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar label, .toolbar select, .toolbar button {
+            font-family: var(--font);
+            font-size: 0.82rem;
+        }
+
+        .toolbar select {
+            padding: 5px 10px;
+            border-radius: 20px;
+            border: none;
+            outline: none;
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            cursor: pointer;
+            max-width: 180px;
+        }
+
+        .toolbar select option {
+            background: var(--wa-teal);
+            color: #fff;
+        }
+
+        .btn-upload {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 2px solid rgba(255,255,255,0.7);
+            background: transparent;
+            color: #fff;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s, border-color 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-upload:hover {
+            background: rgba(255,255,255,0.18);
+            border-color: #fff;
+        }
+
+        #file-input { display: none; }
+
+        /* ── UPLOAD AREA ── */
+        #upload-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .drop-zone {
+            border: 3px dashed #b0bec5;
+            border-radius: 20px;
+            padding: 68px 44px;
+            max-width: 540px;
+            width: 100%;
+            background: #fff;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
+        }
+
+        .drop-zone.drag-over {
+            border-color: var(--wa-light-green);
+            background: #f0fff4;
+            box-shadow: 0 20px 48px rgba(15, 23, 42, 0.14);
+        }
+
+        .drop-zone svg.icon-upload {
+            width: 72px;
+            height: 72px;
+            fill: var(--wa-green);
+            margin-bottom: 18px;
+        }
+
+        .drop-zone h2 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #212529;
+            margin-bottom: 8px;
+        }
+
+        .drop-zone p {
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 24px;
+        }
+
+        .btn-browse {
+            display: inline-block;
+            padding: 10px 28px;
+            border-radius: 24px;
+            background: var(--wa-green);
+            color: #fff;
+            font-family: var(--font);
+            font-size: 0.95rem;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.15s;
+        }
+
+        .btn-browse:hover {
+            background: var(--wa-teal);
+            transform: translateY(-1px);
+        }
+
+        .hint {
+            margin-top: 20px;
+            font-size: 0.82rem;
+            color: #90a4ae;
+            max-width: 420px;
+        }
+
+        /* ── CHAT VIEW ── */
+        #viewer-layout {
+            display: none;
+            flex: 1;
+            gap: 22px;
+            padding: 24px;
+            min-height: 0;
+        }
+
+        #chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--wa-bg);
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='340' height='340' opacity='.07'%3E%3Cpath fill='%23000' d='M0 0h340v340H0z'/%3E%3Cellipse cx='170' cy='170' rx='130' ry='130' fill='none' stroke='%23fff' stroke-width='22'/%3E%3Cpath fill='%23fff' d='M170 60c-60.8 0-110 49.2-110 110s49.2 110 110 110 110-49.2 110-110S230.8 60 170 60zm0 190c-44.1 0-80-35.9-80-80s35.9-80 80-80 80 35.9 80 80-35.9 80-80 80z'/%3E%3C/svg%3E"),
+                repeating-linear-gradient(
+                    transparent,
+                    transparent 28px,
+                    rgba(0,0,0,.015) 28px,
+                    rgba(0,0,0,.015) 29px
+                );
+            overflow-y: auto;
+            padding: 24px 20px;
+            border-radius: 18px;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(255,255,255,.75);
+        }
+
+        #stats-panel {
+            width: min(360px, 34vw);
+            min-width: 260px;
+            background: rgba(255,255,255,0.9);
+            backdrop-filter: blur(6px);
+            border-radius: 18px;
+            box-shadow: 0 16px 34px rgba(15, 23, 42, 0.12);
+            border: 1px solid rgba(255,255,255,.85);
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #stats-panel h2 {
+            font-size: 1.04rem;
+            color: #1f2937;
+            margin-bottom: 14px;
+        }
+
+        #stats-summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .stat-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: #6b7280;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .stats-subtitle {
+            font-size: 0.84rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 10px;
+        }
+
+        .stats-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .stats-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 0.85rem;
+            padding: 9px 10px;
+            border-radius: 10px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+        }
+
+        .stats-list .name {
+            color: #374151;
+            word-break: break-word;
+        }
+
+        .stats-list .count {
+            color: #111827;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ── MESSAGES ── */
+        .msg-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .msg-row.sent {
+            justify-content: flex-end;
+        }
+
+        .msg-row.received {
+            justify-content: flex-start;
+        }
+
+        .msg-row.system {
+            justify-content: center;
+        }
+
+        /* Date dividers */
+        .date-divider {
+            display: flex;
+            justify-content: center;
+            margin: 18px 0 12px;
+        }
+
+        .date-divider span {
+            background: var(--wa-system-bg);
+            color: #4a4a4a;
+            font-size: 0.72rem;
+            padding: 4px 12px;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px var(--wa-shadow);
+        }
+
+        /* Bubble */
+        .bubble {
+            max-width: min(72%, 560px);
+            padding: 10px 12px 8px;
+            border-radius: 14px;
+            box-shadow: 0 6px 14px rgba(0,0,0,.10);
+            position: relative;
+            word-break: break-word;
+            line-height: 1.45;
+        }
+
+        .msg-row.sent .bubble {
+            background: var(--wa-sent);
+            border-top-right-radius: 2px;
+        }
+
+        .msg-row.received .bubble {
+            background: var(--wa-received);
+            border-top-left-radius: 2px;
+        }
+
+        .sender-name {
+            font-size: 0.78rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .msg-text {
+            font-size: 0.9rem;
+            color: #111;
+            white-space: pre-wrap;
+        }
+
+        .msg-text.media-omitted {
+            color: #667781;
+            font-style: italic;
+        }
+
+        .msg-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-top: 7px;
+        }
+
+        .msg-time {
+            font-size: 0.68rem;
+            color: var(--wa-timestamp);
+            white-space: nowrap;
+        }
+
+        /* System bubble */
+        .system-bubble {
+            background: var(--wa-system-bg);
+            color: #4a4a4a;
+            font-size: 0.72rem;
+            padding: 7px 13px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,.08);
+            text-align: center;
+            max-width: 80%;
+        }
+
+        /* ── ERROR / STATUS ── */
+        #error-msg {
+            display: none;
+            background: #fff3f3;
+            border: 1px solid #ffb3b3;
+            color: #c0392b;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin: 20px auto;
+            max-width: 540px;
+            font-size: 0.9rem;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            #viewer-layout {
+                flex-direction: column;
+                padding: 16px;
+                gap: 14px;
+            }
+            #stats-panel {
+                width: 100%;
+                min-width: 0;
+                max-height: 260px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #viewer-layout {
+                padding: 10px;
+            }
+            .toolbar-title { font-size: 0.95rem; }
+            #chat-area { padding: 14px 10px; }
+            .bubble { max-width: 90%; padding: 9px 11px 7px; }
+            .drop-zone { padding: 40px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<header class="toolbar" id="toolbar">
+    <div class="toolbar-title">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" aria-hidden="true">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+        WhatsApp Chat Viewer
+    </div>
+    <div class="toolbar-controls" id="toolbar-controls" style="display:none">
+        <label for="my-name-select" style="color:rgba(255,255,255,.85);white-space:nowrap">My name:</label>
+        <select id="my-name-select" title="Select your name to align your messages on the right">
+            <option value="">— choose —</option>
+        </select>
+        <button class="btn-upload" id="btn-change">📂 Open another file</button>
+    </div>
+    <button class="btn-upload" id="btn-open-toolbar" style="display:none" onclick="triggerFileInput()">📂 Open file</button>
+</header>
+
+<input type="file" id="file-input" accept=".txt">
+
+<!-- UPLOAD AREA -->
+<section id="upload-area">
+    <div class="drop-zone" id="drop-zone" role="button" tabindex="0" aria-label="Upload WhatsApp chat export file">
+        <svg class="icon-upload" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/>
+        </svg>
+        <h2>Drop your WhatsApp chat export here</h2>
+        <p>or click the button below to browse</p>
+        <button class="btn-browse" id="btn-browse" type="button">Browse file</button>
+    </div>
+    <p class="hint">
+        Export a chat in WhatsApp: open a chat → ⋮ menu → More → Export Chat → Without Media.<br>
+        Your file stays in your browser — nothing is uploaded to any server.
+    </p>
+    <div id="error-msg" role="alert"></div>
+</section>
+
+<!-- CHAT + STATS -->
+<main id="viewer-layout">
+    <section id="chat-area" aria-label="Chat messages" aria-live="polite"></section>
+    <aside id="stats-panel" aria-label="Chat statistics">
+        <h2>Statistics</h2>
+        <div id="stats-summary"></div>
+        <div class="stats-subtitle">Messages by participant</div>
+        <ul id="stats-users" class="stats-list"></ul>
+    </aside>
+</main>
+
+<script>
+(function () {
+    'use strict';
+
+    // ── DOM refs ──────────────────────────────────────────────────────────────
+    const fileInput       = document.getElementById('file-input');
+    const dropZone        = document.getElementById('drop-zone');
+    const btnBrowse       = document.getElementById('btn-browse');
+    const btnChange       = document.getElementById('btn-change');
+    const uploadArea      = document.getElementById('upload-area');
+    const viewerLayout    = document.getElementById('viewer-layout');
+    const chatArea        = document.getElementById('chat-area');
+    const statsSummary    = document.getElementById('stats-summary');
+    const statsUsers      = document.getElementById('stats-users');
+    const errorMsg        = document.getElementById('error-msg');
+    const myNameSelect    = document.getElementById('my-name-select');
+    const toolbarControls = document.getElementById('toolbar-controls');
+    const btnOpenToolbar  = document.getElementById('btn-open-toolbar');
+    let currentMessages = null;
+
+    // ── Sender colour palette (cycling) ──────────────────────────────────────
+    const COLORS = [
+        '#E91E63','#9C27B0','#673AB7','#2196F3',
+        '#009688','#FF5722','#795548','#607D8B'
+    ];
+    const senderColorMap = {};
+    let colorIndex = 0;
+    function getSenderColor(name) {
+        if (!senderColorMap[name]) {
+            senderColorMap[name] = COLORS[colorIndex % COLORS.length];
+            colorIndex++;
+        }
+        return senderColorMap[name];
+    }
+
+    // ── WhatsApp export line patterns ─────────────────────────────────────────
+    // Covers:
+    //   [DD/MM/YYYY, HH:MM:SS] Sender: msg
+    //   [M/D/YY, H:MM:SS AM/PM] Sender: msg
+    //   DD/MM/YYYY, HH:MM - Sender: msg
+    //   DD.MM.YYYY HH:MM - Sender: msg   (no comma between date and time)
+    //   M/D/YY, H:MM AM/PM - Sender: msg
+    //   DD.MM.YYYY, HH:MM - Sender: msg   (some locales use dots)
+    const LINE_RE = /^(?:\[(\d{1,2}[\/\.\-]\d{1,2}[\/\.\-]\d{2,4}),\s*(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)\]\s*|(\d{1,2}[\/\.\-]\d{1,2}[\/\.\-]\d{2,4})(?:,\s*|\s+)(\d{1,2}:\d{2}(?::\d{2})?(?:\s*[AP]M)?)\s*-\s*)(.+)/i;
+    const SENDER_RE = /^([^:]+?):\s([\s\S]*)$/;
+
+    function parseLine(line) {
+        const m = LINE_RE.exec(line);
+        if (!m) return null;
+
+        const date   = m[1] || m[3];
+        const time   = (m[2] || m[4]).trim();
+        const rest   = m[5].trim();
+
+        const sm = SENDER_RE.exec(rest);
+        if (sm) {
+            return { date, time, sender: sm[1].trim(), text: sm[2] };
+        }
+        // System / info message (no colon)
+        return { date, time, sender: null, text: rest };
+    }
+
+    // ── Parse the full file text ──────────────────────────────────────────────
+    function parseChat(raw) {
+        const lines = raw.split(/\r?\n/);
+        const messages = [];
+        let current = null;
+
+        for (const line of lines) {
+            if (!line.trim()) {
+                if (current) current.text += '\n';
+                continue;
+            }
+            const parsed = parseLine(line);
+            if (parsed) {
+                if (current) messages.push(current);
+                current = parsed;
+            } else if (current) {
+                // Continuation of a multi-line message
+                current.text += '\n' + line;
+            }
+        }
+        if (current) messages.push(current);
+        return messages;
+    }
+
+    // ── Normalise date string to a consistent display form ───────────────────
+    function formatDateLabel(dateStr) {
+        const parts = dateStr.split(/[\/\.\-]/).map(Number);
+        if (parts.length < 3) return dateStr;
+        const [a, b, c] = parts;
+        // Determine year: the component > 31 is the year; if all ≤ 31, assume last is 2-digit year
+        const year = c > 31 ? c : (a > 31 ? a : (c < 100 ? 2000 + c : c));
+        // Determine day/month: if first part > 12 it must be day (D/M/Y),
+        // if second part > 12 it must be day so first is month (M/D/Y),
+        // otherwise assume D/M/Y (most common WhatsApp locale).
+        let day, month;
+        if (a > 12) {
+            day = a; month = b;          // D/M/Y
+        } else if (b > 12) {
+            month = a; day = b;          // M/D/Y
+        } else {
+            day = a; month = b;          // default: D/M/Y
+        }
+        try {
+            const d = new Date(year, month - 1, day);
+            if (isNaN(d.getTime())) return dateStr;
+            return d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        } catch (_) { return dateStr; }
+    }
+
+    // ── Build the chat DOM ────────────────────────────────────────────────────
+    function renderChat(messages, myName) {
+        chatArea.innerHTML = '';
+
+        if (!messages.length) {
+            showError('No messages found. Make sure you selected the correct WhatsApp export file.');
+            return;
+        }
+
+        let lastDate = null;
+
+        for (const msg of messages) {
+            // Date divider
+            if (msg.date !== lastDate) {
+                lastDate = msg.date;
+                const div = document.createElement('div');
+                div.className = 'date-divider';
+                div.innerHTML = `<span>${escHtml(formatDateLabel(msg.date))}</span>`;
+                chatArea.appendChild(div);
+            }
+
+            const row = document.createElement('div');
+            row.className = 'msg-row';
+
+            if (!msg.sender) {
+                // System message
+                row.classList.add('system');
+                row.innerHTML = `<div class="system-bubble">${escHtml(msg.text)}</div>`;
+            } else {
+                const isSent = myName && msg.sender === myName;
+                row.classList.add(isSent ? 'sent' : 'received');
+
+                const color = isSent ? 'var(--wa-green)' : getSenderColor(msg.sender);
+                const isMedia = /^\u200e?<.+>$/.test(msg.text.trim()) || /^<Media omitted>$/i.test(msg.text.trim());
+
+                row.innerHTML = `
+                    <div class="bubble">
+                        ${!isSent ? `<div class="sender-name" style="color:${escHtml(color)}">${escHtml(msg.sender)}</div>` : ''}
+                        <div class="msg-text${isMedia ? ' media-omitted' : ''}">${escHtml(msg.text.trim())}</div>
+                        <div class="msg-meta">
+                            <span class="msg-time">${escHtml(msg.time)}</span>
+                        </div>
+                    </div>`;
+            }
+
+            chatArea.appendChild(row);
+        }
+    }
+
+    function renderStats(messages) {
+        const senderCounts = {};
+        let systemMessages = 0;
+        for (const msg of messages) {
+            if (!msg.sender) {
+                systemMessages++;
+                continue;
+            }
+            senderCounts[msg.sender] = (senderCounts[msg.sender] || 0) + 1;
+        }
+
+        const participants = Object.keys(senderCounts).length;
+        statsSummary.innerHTML = `
+            <div class="stat-card"><div class="stat-label">Total messages</div><div class="stat-value">${messages.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Participants</div><div class="stat-value">${participants}</div></div>
+            <div class="stat-card"><div class="stat-label">User messages</div><div class="stat-value">${messages.length - systemMessages}</div></div>
+            <div class="stat-card"><div class="stat-label">System messages</div><div class="stat-value">${systemMessages}</div></div>
+        `;
+
+        const sortedUsers = Object.entries(senderCounts)
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+        statsUsers.innerHTML = sortedUsers.length
+            ? sortedUsers.map(([name, count]) => `<li><span class="name">${escHtml(name)}</span><span class="count">${count}</span></li>`).join('')
+            : '<li><span class="name">No user messages</span><span class="count">0</span></li>';
+    }
+
+    // ── Populate "My Name" selector ───────────────────────────────────────────
+    function populateSenderSelect(messages) {
+        const senders = [...new Set(messages.filter(m => m.sender).map(m => m.sender))];
+        // Keep existing selection if still valid
+        const prev = myNameSelect.value;
+        myNameSelect.innerHTML = '<option value="">— choose —</option>';
+        for (const s of senders) {
+            const opt = document.createElement('option');
+            opt.value = s;
+            opt.textContent = s;
+            myNameSelect.appendChild(opt);
+        }
+        if (prev && senders.includes(prev)) myNameSelect.value = prev;
+    }
+
+    // ── Process a File object ─────────────────────────────────────────────────
+    function handleFile(file) {
+        hideError();
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith('.txt')) {
+            showError('Please select a WhatsApp chat export file (.txt). Export "Without Media" from WhatsApp to get this file.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            try {
+                const messages = parseChat(e.target.result);
+                if (!messages.length) {
+                    showError('No messages were found in the file. Please make sure you have selected the correct WhatsApp export (.txt) file.');
+                    return;
+                }
+                populateSenderSelect(messages);
+                resetSenderColors();
+                renderStats(messages);
+
+                // Switch to chat view
+                uploadArea.style.display = 'none';
+                viewerLayout.style.display = 'flex';
+                toolbarControls.style.display = 'flex';
+                btnOpenToolbar.style.display = 'none';
+
+                // Store messages for re-render
+                currentMessages = messages;
+                renderChat(messages, myNameSelect.value);
+                chatArea.scrollTop = chatArea.scrollHeight;
+            } catch (err) {
+                showError('Failed to parse the file: ' + err.message);
+            }
+        };
+        reader.onerror = function () {
+            showError('Failed to read the file. Please try again.');
+        };
+        reader.readAsText(file, 'UTF-8');
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function resetSenderColors() {
+        Object.keys(senderColorMap).forEach(k => delete senderColorMap[k]);
+        colorIndex = 0;
+    }
+
+    function escHtml(str) {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function showError(msg) {
+        errorMsg.textContent = msg;
+        errorMsg.style.display = 'block';
+    }
+
+    function hideError() {
+        errorMsg.style.display = 'none';
+        errorMsg.textContent = '';
+    }
+
+    function triggerFileInput() {
+        fileInput.value = '';
+        fileInput.click();
+    }
+    // expose for inline onclick
+    window.triggerFileInput = triggerFileInput;
+
+    // ── Event listeners ───────────────────────────────────────────────────────
+    btnBrowse.addEventListener('click', triggerFileInput);
+    btnChange.addEventListener('click', () => {
+        viewerLayout.style.display = 'none';
+        currentMessages = null;
+        statsSummary.innerHTML = '';
+        statsUsers.innerHTML = '';
+        uploadArea.style.display = 'flex';
+        uploadArea.style.flexDirection = 'column';
+        uploadArea.style.alignItems = 'center';
+        uploadArea.style.justifyContent = 'center';
+        toolbarControls.style.display = 'none';
+        btnOpenToolbar.style.display = 'none';
+        hideError();
+        triggerFileInput();
+    });
+
+    fileInput.addEventListener('change', () => {
+        handleFile(fileInput.files[0]);
+    });
+
+    // Drag & drop
+    dropZone.addEventListener('dragover', e => {
+        e.preventDefault();
+        dropZone.classList.add('drag-over');
+    });
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+    dropZone.addEventListener('drop', e => {
+        e.preventDefault();
+        dropZone.classList.remove('drag-over');
+        const file = e.dataTransfer.files[0];
+        handleFile(file);
+    });
+
+    // Keyboard accessibility for drop zone
+    dropZone.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerFileInput();
+        }
+    });
+
+    // Re-render when "My Name" changes
+    myNameSelect.addEventListener('change', () => {
+        if (currentMessages) {
+            resetSenderColors();
+            renderChat(currentMessages, myNameSelect.value);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    });
+})();
+</script>
+</body>
+</html>
