@@ -206,9 +206,17 @@
         }
 
         /* ── CHAT VIEW ── */
-        #chat-area {
+        #viewer-layout {
             display: none;
             flex: 1;
+            gap: 16px;
+            padding: 16px;
+            min-height: 0;
+        }
+
+        #chat-area {
+            flex: 1;
+            display: flex;
             flex-direction: column;
             background-color: var(--wa-bg);
             background-image:
@@ -221,6 +229,83 @@
                 );
             overflow-y: auto;
             padding: 12px 10px;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+        }
+
+        #stats-panel {
+            width: min(360px, 34vw);
+            min-width: 260px;
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,.08);
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        #stats-panel h2 {
+            font-size: 1rem;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+
+        #stats-summary {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .stat-card {
+            background: #f7fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: #6b7280;
+        }
+
+        .stat-value {
+            font-size: 1rem;
+            color: #111827;
+            font-weight: 600;
+        }
+
+        .stats-subtitle {
+            font-size: 0.82rem;
+            color: #4b5563;
+            margin-bottom: 8px;
+        }
+
+        .stats-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .stats-list li {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 0.85rem;
+            padding: 6px 8px;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+
+        .stats-list .name {
+            color: #374151;
+            word-break: break-word;
+        }
+
+        .stats-list .count {
+            color: #111827;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         /* ── MESSAGES ── */
@@ -335,7 +420,21 @@
         }
 
         /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            #viewer-layout {
+                flex-direction: column;
+            }
+            #stats-panel {
+                width: 100%;
+                min-width: 0;
+                max-height: 260px;
+            }
+        }
+
         @media (max-width: 480px) {
+            #viewer-layout {
+                padding: 10px;
+            }
             .toolbar-title { font-size: 0.95rem; }
             .bubble { max-width: 88%; }
             .drop-zone { padding: 40px 20px; }
@@ -381,8 +480,16 @@
     <div id="error-msg" role="alert"></div>
 </section>
 
-<!-- CHAT AREA -->
-<main id="chat-area" aria-label="Chat messages" aria-live="polite"></main>
+<!-- CHAT + STATS -->
+<main id="viewer-layout">
+    <section id="chat-area" aria-label="Chat messages" aria-live="polite"></section>
+    <aside id="stats-panel" aria-label="Chat statistics">
+        <h2>Statistics</h2>
+        <div id="stats-summary"></div>
+        <div class="stats-subtitle">Messages by participant</div>
+        <ul id="stats-users" class="stats-list"></ul>
+    </aside>
+</main>
 
 <script>
 (function () {
@@ -394,11 +501,15 @@
     const btnBrowse       = document.getElementById('btn-browse');
     const btnChange       = document.getElementById('btn-change');
     const uploadArea      = document.getElementById('upload-area');
+    const viewerLayout    = document.getElementById('viewer-layout');
     const chatArea        = document.getElementById('chat-area');
+    const statsSummary    = document.getElementById('stats-summary');
+    const statsUsers      = document.getElementById('stats-users');
     const errorMsg        = document.getElementById('error-msg');
     const myNameSelect    = document.getElementById('my-name-select');
     const toolbarControls = document.getElementById('toolbar-controls');
     const btnOpenToolbar  = document.getElementById('btn-open-toolbar');
+    let currentMessages = null;
 
     // ── Sender colour palette (cycling) ──────────────────────────────────────
     const COLORS = [
@@ -540,6 +651,33 @@
         }
     }
 
+    function renderStats(messages) {
+        const senderCounts = {};
+        let systemMessages = 0;
+        for (const msg of messages) {
+            if (!msg.sender) {
+                systemMessages++;
+                continue;
+            }
+            senderCounts[msg.sender] = (senderCounts[msg.sender] || 0) + 1;
+        }
+
+        const participants = Object.keys(senderCounts).length;
+        statsSummary.innerHTML = `
+            <div class="stat-card"><div class="stat-label">Total messages</div><div class="stat-value">${messages.length}</div></div>
+            <div class="stat-card"><div class="stat-label">Participants</div><div class="stat-value">${participants}</div></div>
+            <div class="stat-card"><div class="stat-label">User messages</div><div class="stat-value">${messages.length - systemMessages}</div></div>
+            <div class="stat-card"><div class="stat-label">System messages</div><div class="stat-value">${systemMessages}</div></div>
+        `;
+
+        const sortedUsers = Object.entries(senderCounts)
+            .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+        statsUsers.innerHTML = sortedUsers.length
+            ? sortedUsers.map(([name, count]) => `<li><span class="name">${escHtml(name)}</span><span class="count">${count}</span></li>`).join('')
+            : '<li><span class="name">No user messages</span><span class="count">0</span></li>';
+    }
+
     // ── Populate "My Name" selector ───────────────────────────────────────────
     function populateSenderSelect(messages) {
         const senders = [...new Set(messages.filter(m => m.sender).map(m => m.sender))];
@@ -575,16 +713,16 @@
                 }
                 populateSenderSelect(messages);
                 resetSenderColors();
+                renderStats(messages);
 
                 // Switch to chat view
                 uploadArea.style.display = 'none';
-                chatArea.style.display   = 'flex';
-                chatArea.style.flexDirection = 'column';
+                viewerLayout.style.display = 'flex';
                 toolbarControls.style.display = 'flex';
                 btnOpenToolbar.style.display = 'none';
 
                 // Store messages for re-render
-                chatArea._messages = messages;
+                currentMessages = messages;
                 renderChat(messages, myNameSelect.value);
                 chatArea.scrollTop = chatArea.scrollHeight;
             } catch (err) {
@@ -632,8 +770,10 @@
     // ── Event listeners ───────────────────────────────────────────────────────
     btnBrowse.addEventListener('click', triggerFileInput);
     btnChange.addEventListener('click', () => {
-        chatArea.style.display = 'none';
-        chatArea._messages = null;
+        viewerLayout.style.display = 'none';
+        currentMessages = null;
+        statsSummary.innerHTML = '';
+        statsUsers.innerHTML = '';
         uploadArea.style.display = 'flex';
         uploadArea.style.flexDirection = 'column';
         uploadArea.style.alignItems = 'center';
@@ -668,9 +808,9 @@
 
     // Re-render when "My Name" changes
     myNameSelect.addEventListener('change', () => {
-        if (chatArea._messages) {
+        if (currentMessages) {
             resetSenderColors();
-            renderChat(chatArea._messages, myNameSelect.value);
+            renderChat(currentMessages, myNameSelect.value);
             chatArea.scrollTop = chatArea.scrollHeight;
         }
     });
